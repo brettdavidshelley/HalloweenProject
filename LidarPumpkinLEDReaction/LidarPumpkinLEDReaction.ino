@@ -10,6 +10,8 @@ int LED3 = 8;
 int LED4 = 9;
 int LED5 = 10;
 int LED6 = 11;
+int soundSignalPin = 12;
+int audioSignalPin = A0;
 
 void setup() {
   pinMode(trigPin, OUTPUT);
@@ -20,6 +22,8 @@ void setup() {
   pinMode(LED4, OUTPUT);
   pinMode(LED5, OUTPUT);
   pinMode(LED6, OUTPUT);
+  pinMode(soundSignalPin, OUTPUT);
+  pinMode(audioSignalPin, INPUT); //we could consider pull up if the signal was too weak, it should be able to handle 3.3v pico pi inputs though (cut off is 2.5 ish)
 }
 
 void loop() {
@@ -45,10 +49,13 @@ void loop() {
 
   //This section controls the LEDs to demo the lidar
   if (inches < 24) {
-    for (int i = 0; i < 10; i++) {
+    digitalWrite(soundSignalPin, HIGH); //currently have a step down voltage of around 3v going to pico
+    delay(250); //delay should be long enough for pico to process signal, it finishes the sound even when low
+    digitalWrite(soundSignalPin, LOW);
+    while (digitalRead(audioSignalPin))
+    {
       reaction();
     }
-    delay(8000); //length of time from other stuff?
   }
 }
 
